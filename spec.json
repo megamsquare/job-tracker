@@ -1,0 +1,2322 @@
+{
+ "v": 1,
+ "manifest": {
+  "runtime": "0.4.0",
+  "generator": "claude-opus-5-5 (hand-written)",
+  "source": {
+   "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  }
+ },
+ "module": {
+  "id": "jobtracker",
+  "name": "Job Tracker",
+  "purpose": "Keep a list of the jobs you've applied for, with the role, the date you applied, where each one stands and your notes.",
+  "icon": "briefcase",
+  "category": "work",
+  "tags": [
+   "tracker",
+   "job-search",
+   "log"
+  ]
+ },
+ "tokens": {
+  "color": {
+   "$type": "color",
+   "background": {
+    "$value": "#f5f6f8"
+   },
+   "on-background": {
+    "$value": "#16181d"
+   },
+   "surface": {
+    "$value": "#ffffff"
+   },
+   "on-surface": {
+    "$value": "#16181d"
+   },
+   "border": {
+    "$value": "#dcdfe5"
+   },
+   "primary": {
+    "$value": "#3346c4"
+   },
+   "on-primary": {
+    "$value": "#ffffff"
+   },
+   "input": {
+    "$value": "#eef0f4"
+   },
+   "on-input": {
+    "$value": "#16181d"
+   },
+   "success": {
+    "$value": "#15803d"
+   },
+   "warning": {
+    "$value": "#b45309"
+   },
+   "error": {
+    "$value": "#b91c1c"
+   }
+  },
+  "text": {
+   "$type": "color",
+   "caption-color": {
+    "$value": "#565c6a"
+   },
+   "color": {
+    "$value": "#16181d"
+   }
+  },
+  "border-radius": {
+   "$type": "dimension",
+   "$value": {
+    "value": 12,
+    "unit": "px"
+   }
+  },
+  "font-family": {
+   "$type": "fontFamily",
+   "$value": [
+    "system-ui",
+    "sans-serif"
+   ]
+  },
+  "dark": {
+   "color": {
+    "$type": "color",
+    "background": {
+     "$value": "#111318"
+    },
+    "on-background": {
+     "$value": "#eceef3"
+    },
+    "surface": {
+     "$value": "#1b1e25"
+    },
+    "on-surface": {
+     "$value": "#eceef3"
+    },
+    "border": {
+     "$value": "#2e333d"
+    },
+    "primary": {
+     "$value": "#9aa8ff"
+    },
+    "on-primary": {
+     "$value": "#10131c"
+    },
+    "input": {
+     "$value": "#232731"
+    },
+    "on-input": {
+     "$value": "#eceef3"
+    },
+    "success": {
+     "$value": "#4ade80"
+    },
+    "warning": {
+     "$value": "#fbbf24"
+    },
+    "error": {
+     "$value": "#f87171"
+    }
+   },
+   "text": {
+    "$type": "color",
+    "caption-color": {
+     "$value": "#a6acb9"
+    },
+    "color": {
+     "$value": "#eceef3"
+    }
+   }
+  },
+  "button": {
+   "margin": {
+    "$type": "dimension",
+    "$value": {
+     "value": 0,
+     "unit": "px"
+    }
+   }
+  }
+ },
+ "surface": {
+  "catalog": "https://cloudcrane.ai/catalogs/app/v1.json",
+  "messages": [
+   {
+    "version": "v0.9.1",
+    "createSurface": {
+     "surfaceId": "jobs",
+     "catalogId": "https://cloudcrane.ai/catalogs/app/v1.json"
+    }
+   },
+   {
+    "version": "v0.9.1",
+    "updateDataModel": {
+     "surfaceId": "jobs",
+     "path": "/ui",
+     "value": {
+      "mode": "list",
+      "selId": 0,
+      "draft": {
+       "id": 0,
+       "company": "",
+       "role": "",
+       "appliedOn": "",
+       "status": "Applied",
+       "notes": "",
+       "stages": []
+      },
+      "draftStatusList": [
+       "Applied"
+      ],
+      "editStatusList": [],
+      "defaultStatus": [
+       "Applied"
+      ]
+     }
+    }
+   },
+   {
+    "version": "v0.9.1",
+    "updateComponents": {
+     "surfaceId": "jobs",
+     "components": [
+      {
+       "id": "root",
+       "component": "Column",
+       "children": [
+        "titleSec",
+        "countSec",
+        "addBtnSec",
+        "emptySec",
+        "rowsSec",
+        "addSec",
+        "editSec",
+        "historySec",
+        "editDoneSec"
+       ]
+      },
+      {
+       "id": "titleSec",
+       "component": "List",
+       "children": {
+        "componentId": "title",
+        "path": "/computed/always"
+       }
+      },
+      {
+       "id": "title",
+       "component": "Text",
+       "text": "Job Tracker",
+       "variant": "h1"
+      },
+      {
+       "id": "countSec",
+       "component": "List",
+       "children": {
+        "componentId": "countCol",
+        "path": "/computed/isList"
+       }
+      },
+      {
+       "id": "countCol",
+       "component": "Column",
+       "children": [
+        "count",
+        "summary"
+       ]
+      },
+      {
+       "id": "count",
+       "component": "Text",
+       "text": {
+        "path": "/computed/countText"
+       },
+       "variant": "caption"
+      },
+      {
+       "id": "summary",
+       "component": "Text",
+       "text": {
+        "path": "/computed/summary"
+       },
+       "variant": "caption"
+      },
+      {
+       "id": "addBtnSec",
+       "component": "List",
+       "children": {
+        "componentId": "addBtn",
+        "path": "/computed/isList"
+       }
+      },
+      {
+       "id": "addBtn",
+       "component": "Button",
+       "child": "addBtnLabel",
+       "variant": "primary",
+       "action": {
+        "functionCall": {
+         "call": "batch",
+         "args": {
+          "steps": [
+           {
+            "op": "set",
+            "target": "/ui/draft/company",
+            "value": ""
+           },
+           {
+            "op": "set",
+            "target": "/ui/draft/role",
+            "value": ""
+           },
+           {
+            "op": "set",
+            "target": "/ui/draft/appliedOn",
+            "value": {
+             "path": "/today"
+            }
+           },
+           {
+            "op": "set",
+            "target": "/ui/draftStatusList",
+            "value": {
+             "path": "/ui/defaultStatus"
+            }
+           },
+           {
+            "op": "set",
+            "target": "/ui/draft/notes",
+            "value": ""
+           },
+           {
+            "op": "set",
+            "target": "/ui/mode",
+            "value": "add"
+           }
+          ]
+         }
+        }
+       }
+      },
+      {
+       "id": "addBtnLabel",
+       "component": "Text",
+       "text": "Add application"
+      },
+      {
+       "id": "emptySec",
+       "component": "List",
+       "children": {
+        "componentId": "emptyText",
+        "path": "/computed/empty"
+       }
+      },
+      {
+       "id": "emptyText",
+       "component": "Text",
+       "text": {
+        "path": "text"
+       }
+      },
+      {
+       "id": "rowsSec",
+       "component": "List",
+       "children": {
+        "componentId": "rowCard",
+        "path": "/computed/listRows"
+       }
+      },
+      {
+       "id": "rowCard",
+       "component": "Card",
+       "child": "rowCol"
+      },
+      {
+       "id": "rowCol",
+       "component": "Column",
+       "align": "start",
+       "children": [
+        "rowTitleBtn",
+        "rowMeta"
+       ]
+      },
+      {
+       "id": "rowTitleBtn",
+       "component": "Button",
+       "child": "rowTitleRow",
+       "variant": "borderless",
+       "action": {
+        "functionCall": {
+         "call": "batch",
+         "args": {
+          "steps": [
+           {
+            "op": "set",
+            "target": "/ui/selId",
+            "value": {
+             "path": "id"
+            }
+           },
+           {
+            "op": "set",
+            "target": "/ui/editStatusList",
+            "value": {
+             "path": "statusList"
+            }
+           },
+           {
+            "op": "set",
+            "target": "/ui/mode",
+            "value": "edit"
+           }
+          ]
+         }
+        }
+       }
+      },
+      {
+       "id": "rowTitleRow",
+       "component": "Row",
+       "align": "start",
+       "children": [
+        "rowNum",
+        "rowCompany"
+       ]
+      },
+      {
+       "id": "rowNum",
+       "component": "Text",
+       "text": {
+        "path": "numLabel"
+       },
+       "variant": "h4"
+      },
+      {
+       "id": "rowCompany",
+       "component": "Text",
+       "text": {
+        "path": "company"
+       },
+       "variant": "h4",
+       "weight": 1
+      },
+      {
+       "id": "rowMeta",
+       "component": "Text",
+       "text": {
+        "path": "meta"
+       }
+      },
+      {
+       "id": "addSec",
+       "component": "List",
+       "children": {
+        "componentId": "addView",
+        "path": "/computed/isAdd"
+       }
+      },
+      {
+       "id": "addView",
+       "component": "Column",
+       "children": [
+        "addTitle",
+        "aCompany",
+        "aRole",
+        "aDate",
+        "aStatus",
+        "aNotes",
+        "aHint",
+        "addActions"
+       ]
+      },
+      {
+       "id": "addTitle",
+       "component": "Text",
+       "text": "New application",
+       "variant": "h2"
+      },
+      {
+       "id": "aCompany",
+       "component": "TextField",
+       "label": "Company",
+       "value": {
+        "path": "/ui/draft/company"
+       }
+      },
+      {
+       "id": "aRole",
+       "component": "TextField",
+       "label": "Role",
+       "value": {
+        "path": "/ui/draft/role"
+       }
+      },
+      {
+       "id": "aDate",
+       "component": "DateTimeInput",
+       "label": "Date applied",
+       "enableDate": true,
+       "value": {
+        "path": "/ui/draft/appliedOn"
+       }
+      },
+      {
+       "id": "aStatus",
+       "component": "ChoicePicker",
+       "label": "Status",
+       "variant": "mutuallyExclusive",
+       "displayStyle": "chips",
+       "options": [
+        {
+         "label": "Applied",
+         "value": "Applied"
+        },
+        {
+         "label": "Interviewing",
+         "value": "Interviewing"
+        },
+        {
+         "label": "Offer",
+         "value": "Offer"
+        },
+        {
+         "label": "Rejected",
+         "value": "Rejected"
+        },
+        {
+         "label": "Withdrawn",
+         "value": "Withdrawn"
+        }
+       ],
+       "value": {
+        "path": "/ui/draftStatusList"
+       }
+      },
+      {
+       "id": "aNotes",
+       "component": "TextField",
+       "label": "Notes",
+       "variant": "longText",
+       "value": {
+        "path": "/ui/draft/notes"
+       }
+      },
+      {
+       "id": "aHint",
+       "component": "Text",
+       "text": {
+        "path": "/computed/addHint"
+       },
+       "variant": "caption"
+      },
+      {
+       "id": "addActions",
+       "component": "Row",
+       "justify": "spaceBetween",
+       "children": [
+        "cancelBtn",
+        "saveBtn"
+       ]
+      },
+      {
+       "id": "cancelBtn",
+       "component": "Button",
+       "child": "cancelLabel",
+       "action": {
+        "functionCall": {
+         "call": "set",
+         "args": {
+          "path": "/ui/mode",
+          "value": "list"
+         }
+        }
+       }
+      },
+      {
+       "id": "cancelLabel",
+       "component": "Text",
+       "text": "Cancel"
+      },
+      {
+       "id": "saveBtn",
+       "component": "Button",
+       "child": "saveLabel",
+       "variant": "primary",
+       "checks": [
+        {
+         "condition": {
+          "call": "required",
+          "args": {
+           "value": {
+            "path": "/ui/draft/company"
+           }
+          },
+          "returnType": "boolean"
+         },
+         "message": "Add the company first"
+        },
+        {
+         "condition": {
+          "call": "required",
+          "args": {
+           "value": {
+            "path": "/ui/draft/role"
+           }
+          },
+          "returnType": "boolean"
+         },
+         "message": "Add the role first"
+        }
+       ],
+       "action": {
+        "functionCall": {
+         "call": "batch",
+         "args": {
+          "steps": [
+           {
+            "op": "set",
+            "target": "/ui/draft/status",
+            "value": {
+             "path": "/computed/draftStatus"
+            }
+           },
+           {
+            "op": "set",
+            "target": "/ui/draft/stages",
+            "value": {
+             "path": "/computed/draftStages"
+            }
+           },
+           {
+            "op": "set",
+            "target": "/ui/draft/id",
+            "value": {
+             "path": "/saved/nextId"
+            }
+           },
+           {
+            "op": "push",
+            "target": "/saved/apps",
+            "value": {
+             "path": "/ui/draft"
+            }
+           },
+           {
+            "op": "set",
+            "target": "/saved/nextId",
+            "value": {
+             "path": "/computed/afterNextId"
+            }
+           },
+           {
+            "op": "set",
+            "target": "/ui/mode",
+            "value": "list"
+           }
+          ]
+         }
+        }
+       }
+      },
+      {
+       "id": "saveLabel",
+       "component": "Text",
+       "text": "Save"
+      },
+      {
+       "id": "editSec",
+       "component": "List",
+       "children": {
+        "componentId": "editView",
+        "path": "/computed/isEdit"
+       }
+      },
+      {
+       "id": "editView",
+       "component": "Column",
+       "children": [
+        "editTitle",
+        "eCompany",
+        "eRole",
+        "eDate",
+        "eStatus",
+        "eNotes",
+        "historyTitle"
+       ]
+      },
+      {
+       "id": "editTitle",
+       "component": "Text",
+       "text": "Edit application",
+       "variant": "h2"
+      },
+      {
+       "id": "eCompany",
+       "component": "TextField",
+       "label": "Company",
+       "value": {
+        "path": "/ui/edit/company"
+       }
+      },
+      {
+       "id": "eRole",
+       "component": "TextField",
+       "label": "Role",
+       "value": {
+        "path": "/ui/edit/role"
+       }
+      },
+      {
+       "id": "eDate",
+       "component": "DateTimeInput",
+       "label": "Date applied",
+       "enableDate": true,
+       "value": {
+        "path": "/ui/edit/appliedOn"
+       }
+      },
+      {
+       "id": "eStatus",
+       "component": "ChoicePicker",
+       "label": "Status",
+       "variant": "mutuallyExclusive",
+       "displayStyle": "chips",
+       "options": [
+        {
+         "label": "Applied",
+         "value": "Applied"
+        },
+        {
+         "label": "Interviewing",
+         "value": "Interviewing"
+        },
+        {
+         "label": "Offer",
+         "value": "Offer"
+        },
+        {
+         "label": "Rejected",
+         "value": "Rejected"
+        },
+        {
+         "label": "Withdrawn",
+         "value": "Withdrawn"
+        }
+       ],
+       "value": {
+        "path": "/ui/editStatusList"
+       }
+      },
+      {
+       "id": "eNotes",
+       "component": "TextField",
+       "label": "Notes",
+       "variant": "longText",
+       "value": {
+        "path": "/ui/edit/notes"
+       }
+      },
+      {
+       "id": "historyTitle",
+       "component": "Text",
+       "text": "Stage history",
+       "variant": "h4"
+      },
+      {
+       "id": "historySec",
+       "component": "List",
+       "children": {
+        "componentId": "historyRow",
+        "path": "/computed/editHistory"
+       }
+      },
+      {
+       "id": "historyRow",
+       "component": "Text",
+       "text": {
+        "path": "label"
+       }
+      },
+      {
+       "id": "editDoneSec",
+       "component": "List",
+       "children": {
+        "componentId": "editDone",
+        "path": "/computed/isEdit"
+       }
+      },
+      {
+       "id": "editDone",
+       "component": "Column",
+       "children": [
+        "eHint",
+        "doneBtn"
+       ]
+      },
+      {
+       "id": "eHint",
+       "component": "Text",
+       "text": {
+        "path": "/computed/editHint"
+       },
+       "variant": "caption"
+      },
+      {
+       "id": "doneBtn",
+       "component": "Button",
+       "child": "doneLabel",
+       "variant": "primary",
+       "checks": [
+        {
+         "condition": {
+          "call": "required",
+          "args": {
+           "value": {
+            "path": "/ui/edit/company"
+           }
+          },
+          "returnType": "boolean"
+         },
+         "message": "Add the company first"
+        },
+        {
+         "condition": {
+          "call": "required",
+          "args": {
+           "value": {
+            "path": "/ui/edit/role"
+           }
+          },
+          "returnType": "boolean"
+         },
+         "message": "Add the role first"
+        }
+       ],
+       "action": {
+        "functionCall": {
+         "call": "batch",
+         "args": {
+          "steps": [
+           {
+            "op": "set",
+            "target": "/ui/edit/stages",
+            "value": {
+             "path": "/computed/editStages"
+            }
+           },
+           {
+            "op": "set",
+            "target": "/ui/edit/status",
+            "value": {
+             "path": "/computed/editStatus"
+            }
+           },
+           {
+            "op": "set",
+            "target": "/ui/mode",
+            "value": "list"
+           }
+          ]
+         }
+        }
+       }
+      },
+      {
+       "id": "doneLabel",
+       "component": "Text",
+       "text": "Done"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "data": {
+  "version": 3,
+  "key": "jt.data",
+  "persist": "/saved",
+  "views": [
+   {
+    "path": "/ui/edit",
+    "source": "/saved/apps/${/computed/selIndex}"
+   }
+  ],
+  "schema": {
+   "type": "object",
+   "properties": {
+    "schemaVersion": {
+     "type": "integer"
+    },
+    "nextId": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "apps": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "integer"
+       },
+       "company": {
+        "type": "string"
+       },
+       "role": {
+        "type": "string"
+       },
+       "appliedOn": {
+        "type": "string"
+       },
+       "status": {
+        "type": "string"
+       },
+       "notes": {
+        "type": "string"
+       },
+       "stages": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "properties": {
+          "stage": {
+           "type": "string"
+          },
+          "date": {
+           "type": "string"
+          }
+         },
+         "required": [
+          "stage",
+          "date"
+         ]
+        }
+       }
+      },
+      "required": [
+       "id",
+       "company",
+       "role",
+       "appliedOn",
+       "status"
+      ]
+     }
+    },
+    "v1Backup": {
+     "type": "object"
+    },
+    "v2Backup": {
+     "type": "array"
+    }
+   },
+   "required": [
+    "schemaVersion",
+    "nextId",
+    "apps"
+   ]
+  },
+  "initial": {
+   "schemaVersion": 3,
+   "nextId": 1,
+   "apps": []
+  },
+  "migrations": [
+   {
+    "from": 1,
+    "to": 2,
+    "cel": "{'schemaVersion': 2, 'nextId': saved.nextId, 'v1Backup': saved, 'apps': saved.apps.map(a, {'id': a.id, 'company': a.company, 'role': a.role, 'appliedOn': a.appliedOn, 'status': a.status, 'notes': has(a.notes) ? a.notes : '', 'stages': [{'stage': a.status, 'date': a.appliedOn}]})}"
+   },
+   {
+    "from": 2,
+    "to": 3,
+    "cel": "{'schemaVersion': 3, 'nextId': saved.nextId, 'v1Backup': has(saved.v1Backup) ? saved.v1Backup : {}, 'v2Backup': saved.apps.map(a, {'id': a.id, 'stages': has(a.stages) ? a.stages : []}), 'apps': saved.apps.map(a, cel.bind(cs, cleanStages(has(a.stages) && a.stages.size() > 0 ? a.stages : [{'stage': a.status, 'date': a.appliedOn}]), {'id': a.id, 'company': a.company, 'role': a.role, 'appliedOn': a.appliedOn, 'notes': has(a.notes) ? a.notes : '', 'stages': cs, 'status': cs[cs.size() - 1].stage}))}"
+   }
+  ],
+  "personal": [
+   "/apps"
+  ]
+ },
+ "logic": {
+  "consts": {},
+  "functions": {
+   "newestFirst": {
+    "params": [
+     "acc",
+     "a"
+    ],
+    "cel": "[a] + acc"
+   },
+   "findStep": {
+    "params": [
+     "acc",
+     "a"
+    ],
+    "cel": "{'n': acc.n + 1, 'at': has(a.id) && a.id == acc.id ? acc.n : acc.at, 'id': acc.id}"
+   },
+   "indexOfId": {
+    "params": [
+     "apps",
+     "id"
+    ],
+    "cel": "fold(apps, {'n': 0, 'at': -1, 'id': id}, 'findStep').at"
+   },
+   "countText": {
+    "params": [
+     "n"
+    ],
+    "cel": "string(n) + (n == 1 ? ' application' : ' applications')"
+   },
+   "missingHint": {
+    "params": [
+     "company",
+     "role"
+    ],
+    "cel": "company == '' && role == '' ? 'Add the company and role to save.' : company == '' ? 'Add the company to save.' : role == '' ? 'Add the role to save.' : ''"
+   },
+   "toRow": {
+    "params": [
+     "acc",
+     "a"
+    ],
+    "cel": "acc + [{'num': acc.size() + 1, 'id': a.id, 'company': a.company, 'numLabel': '#' + string(acc.size() + 1) + ' ·', 'meta': a.role + ' · ' + a.status + ' · ' + prettyDate(a.appliedOn), 'statusList': [a.status]}]"
+   },
+   "pickStatus": {
+    "params": [
+     "chosen",
+     "fallback"
+    ],
+    "cel": "chosen.size() > 0 ? chosen[0] : fallback"
+   },
+   "migrateV1": {
+    "params": [
+     "saved"
+    ],
+    "cel": "{'schemaVersion': 2, 'nextId': saved.nextId, 'v1Backup': saved, 'apps': saved.apps.map(a, {'id': a.id, 'company': a.company, 'role': a.role, 'appliedOn': a.appliedOn, 'status': a.status, 'notes': has(a.notes) ? a.notes : '', 'stages': [{'stage': a.status, 'date': a.appliedOn}]})}"
+   },
+   "dropStep": {
+    "params": [
+     "acc",
+     "x"
+    ],
+    "cel": "{'i': acc.i + 1, 'n': acc.n, 'out': acc.i < acc.n - 1 ? acc.out + [x] : acc.out}"
+   },
+   "dropLast": {
+    "params": [
+     "l"
+    ],
+    "cel": "fold(l, {'i': 0, 'n': l.size(), 'out': []}, 'dropStep').out"
+   },
+   "cleanStep": {
+    "params": [
+     "acc",
+     "s"
+    ],
+    "cel": "acc.size() == 0 ? [s] : acc[acc.size() - 1].stage == s.stage ? acc : (acc[acc.size() - 1].date == s.date && acc.size() > 1) ? cel.bind(rest, dropLast(acc), rest[rest.size() - 1].stage == s.stage ? rest : rest + [s]) : acc + [s]"
+   },
+   "cleanStages": {
+    "params": [
+     "st"
+    ],
+    "cel": "fold(st, [], 'cleanStep')"
+   },
+   "prettyDate": {
+    "params": [
+     "d"
+    ],
+    "cel": "d.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$') ? cel.bind(t, timestamp(d + 'T00:00:00Z'), string(t.getDate()) + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][t.getMonth()] + ' ' + string(t.getFullYear())) : d"
+   },
+   "sortKey": {
+    "params": [
+     "a"
+    ],
+    "cel": "a.appliedOn + '#' + string(100000 + a.id)"
+   },
+   "byDateDesc": {
+    "params": [
+     "apps"
+    ],
+    "cel": "fold(apps.map(a, sortKey(a)).sort(), [], 'newestFirst').map(k, apps.filter(x, sortKey(x) == k)[0])"
+   },
+   "joinStep": {
+    "params": [
+     "acc",
+     "s"
+    ],
+    "cel": "acc == '' ? s : acc + ' · ' + s"
+   },
+   "summaryOf": {
+    "params": [
+     "apps"
+    ],
+    "cel": "fold(['Applied', 'Interviewing', 'Offer', 'Rejected', 'Withdrawn'].map(s, {'s': s, 'n': apps.filter(a, a.status == s).size()}).filter(x, x.n > 0).map(x, string(x.n) + ' ' + x.s), '', 'joinStep')"
+   },
+   "migrateV2": {
+    "params": [
+     "saved"
+    ],
+    "cel": "{'schemaVersion': 3, 'nextId': saved.nextId, 'v1Backup': has(saved.v1Backup) ? saved.v1Backup : {}, 'v2Backup': saved.apps.map(a, {'id': a.id, 'stages': has(a.stages) ? a.stages : []}), 'apps': saved.apps.map(a, cel.bind(cs, cleanStages(has(a.stages) && a.stages.size() > 0 ? a.stages : [{'stage': a.status, 'date': a.appliedOn}]), {'id': a.id, 'company': a.company, 'role': a.role, 'appliedOn': a.appliedOn, 'notes': has(a.notes) ? a.notes : '', 'stages': cs, 'status': cs[cs.size() - 1].stage}))}"
+   }
+  },
+  "computed": {
+   "/computed/selIndex": "indexOfId(saved.apps, ui.selId)",
+   "/computed/afterNextId": "saved.nextId + 1",
+   "/computed/countText": "countText(saved.apps.size())",
+   "/computed/isList": "ui.mode == 'list' ? [{'shown': true}] : []",
+   "/computed/isAdd": "ui.mode == 'add' ? [{'shown': true}] : []",
+   "/computed/isEdit": "ui.mode == 'edit' ? [{'shown': true}] : []",
+   "/computed/empty": "ui.mode == 'list' && saved.apps.size() == 0 ? [{'text': 'No applications yet. Tap Add application to log the first one you sent.'}] : []",
+   "/computed/always": "[{'shown': true}]",
+   "/computed/listRows": "ui.mode == 'list' ? fold(byDateDesc(saved.apps), [], 'toRow') : []",
+   "/computed/addHint": "missingHint(ui.draft.company, ui.draft.role)",
+   "/computed/editHint": "ui.mode == 'edit' ? missingHint(ui.edit.company, ui.edit.role) : ''",
+   "/computed/draftStatus": "pickStatus(ui.draftStatusList, 'Applied')",
+   "/computed/draftStages": "[{'stage': pickStatus(ui.draftStatusList, 'Applied'), 'date': ui.draft.appliedOn}]",
+   "/computed/editStatus": "ui.mode == 'edit' ? pickStatus(ui.editStatusList, ui.edit.status) : ''",
+   "/computed/editStages": "ui.mode == 'edit' ? cleanStep(has(ui.edit.stages) ? ui.edit.stages : [], {'stage': pickStatus(ui.editStatusList, ui.edit.status), 'date': today}) : []",
+   "/computed/editHistory": "ui.mode == 'edit' && has(ui.edit.stages) ? ui.edit.stages.map(s, {'label': s.stage + ' · ' + prettyDate(s.date)}) : []",
+   "/computed/summary": "summaryOf(saved.apps)"
+  },
+  "vectors": [
+   {
+    "fn": "indexOfId",
+    "in": [
+     [
+      {
+       "id": 1
+      },
+      {
+       "id": 4
+      },
+      {
+       "id": 2
+      }
+     ],
+     4
+    ],
+    "out": 1,
+    "from": "hint"
+   },
+   {
+    "fn": "indexOfId",
+    "in": [
+     [
+      {
+       "id": 1
+      },
+      {
+       "id": 4
+      }
+     ],
+     9
+    ],
+    "out": -1,
+    "from": "hint"
+   },
+   {
+    "fn": "indexOfId",
+    "in": [
+     [],
+     1
+    ],
+    "out": -1,
+    "from": "hint"
+   },
+   {
+    "fn": "findStep",
+    "in": [
+     {
+      "n": 0,
+      "at": -1,
+      "id": 4
+     },
+     {
+      "id": 4
+     }
+    ],
+    "out": {
+     "n": 1,
+     "at": 0,
+     "id": 4
+    },
+    "from": "hint"
+   },
+   {
+    "fn": "findStep",
+    "in": [
+     {
+      "n": 1,
+      "at": 0,
+      "id": 4
+     },
+     {
+      "id": 7
+     }
+    ],
+    "out": {
+     "n": 2,
+     "at": 0,
+     "id": 4
+    },
+    "from": "hint"
+   },
+   {
+    "fn": "countText",
+    "in": [
+     1
+    ],
+    "out": "1 application",
+    "from": "hint"
+   },
+   {
+    "fn": "countText",
+    "in": [
+     3
+    ],
+    "out": "3 applications",
+    "from": "hint"
+   },
+   {
+    "fn": "newestFirst",
+    "in": [
+     [
+      {
+       "id": 1
+      }
+     ],
+     {
+      "id": 2
+     }
+    ],
+    "out": [
+     {
+      "id": 2
+     },
+     {
+      "id": 1
+     }
+    ],
+    "from": "hint"
+   },
+   {
+    "fn": "missingHint",
+    "in": [
+     "",
+     ""
+    ],
+    "out": "Add the company and role to save.",
+    "from": "hint"
+   },
+   {
+    "fn": "missingHint",
+    "in": [
+     "Quillstone Labs",
+     ""
+    ],
+    "out": "Add the role to save.",
+    "from": "hint"
+   },
+   {
+    "fn": "missingHint",
+    "in": [
+     "Quillstone Labs",
+     "Product designer"
+    ],
+    "out": "",
+    "from": "hint"
+   },
+   {
+    "fn": "pickStatus",
+    "in": [
+     [
+      "Offer"
+     ],
+     "Applied"
+    ],
+    "out": "Offer",
+    "from": "hint"
+   },
+   {
+    "fn": "pickStatus",
+    "in": [
+     [],
+     "Applied"
+    ],
+    "out": "Applied",
+    "from": "hint"
+   },
+   {
+    "fn": "migrateV1",
+    "in": [
+     {
+      "schemaVersion": 1,
+      "nextId": 3,
+      "apps": [
+       {
+        "id": 1,
+        "company": "Quillstone Labs",
+        "role": "Product designer",
+        "appliedOn": "2026-11-02",
+        "status": "Applied",
+        "notes": ""
+       },
+       {
+        "id": 2,
+        "company": "Brightwater & Finch",
+        "role": "Forward Deployed Engineer",
+        "appliedOn": "2026-10-15",
+        "status": "Rejected",
+        "notes": "Panel went well"
+       }
+      ]
+     }
+    ],
+    "out": {
+     "schemaVersion": 2,
+     "nextId": 3,
+     "apps": [
+      {
+       "id": 1,
+       "company": "Quillstone Labs",
+       "role": "Product designer",
+       "appliedOn": "2026-11-02",
+       "status": "Applied",
+       "notes": "",
+       "stages": [
+        {
+         "stage": "Applied",
+         "date": "2026-11-02"
+        }
+       ]
+      },
+      {
+       "id": 2,
+       "company": "Brightwater & Finch",
+       "role": "Forward Deployed Engineer",
+       "appliedOn": "2026-10-15",
+       "status": "Rejected",
+       "notes": "Panel went well",
+       "stages": [
+        {
+         "stage": "Rejected",
+         "date": "2026-10-15"
+        }
+       ]
+      }
+     ],
+     "v1Backup": {
+      "schemaVersion": 1,
+      "nextId": 3,
+      "apps": [
+       {
+        "id": 1,
+        "company": "Quillstone Labs",
+        "role": "Product designer",
+        "appliedOn": "2026-11-02",
+        "status": "Applied",
+        "notes": ""
+       },
+       {
+        "id": 2,
+        "company": "Brightwater & Finch",
+        "role": "Forward Deployed Engineer",
+        "appliedOn": "2026-10-15",
+        "status": "Rejected",
+        "notes": "Panel went well"
+       }
+      ]
+     }
+    },
+    "from": "hint"
+   },
+   {
+    "fn": "prettyDate",
+    "in": [
+     "2026-11-02"
+    ],
+    "out": "2 Nov 2026",
+    "from": "hint"
+   },
+   {
+    "fn": "prettyDate",
+    "in": [
+     "2026-10-28"
+    ],
+    "out": "28 Oct 2026",
+    "from": "hint"
+   },
+   {
+    "fn": "prettyDate",
+    "in": [
+     "2026-01-31"
+    ],
+    "out": "31 Jan 2026",
+    "from": "hint"
+   },
+   {
+    "fn": "cleanStages",
+    "in": [
+     [
+      {
+       "stage": "Interviewing",
+       "date": "2026-10-28"
+      },
+      {
+       "stage": "Offer",
+       "date": "2026-11-12"
+      },
+      {
+       "stage": "Interviewing",
+       "date": "2026-11-12"
+      },
+      {
+       "stage": "Offer",
+       "date": "2026-11-12"
+      }
+     ]
+    ],
+    "out": [
+     {
+      "stage": "Interviewing",
+      "date": "2026-10-28"
+     },
+     {
+      "stage": "Offer",
+      "date": "2026-11-12"
+     }
+    ],
+    "from": "hint"
+   },
+   {
+    "fn": "cleanStages",
+    "in": [
+     [
+      {
+       "stage": "Applied",
+       "date": "2026-11-12"
+      },
+      {
+       "stage": "Offer",
+       "date": "2026-11-12"
+      },
+      {
+       "stage": "Applied",
+       "date": "2026-11-12"
+      }
+     ]
+    ],
+    "out": [
+     {
+      "stage": "Applied",
+      "date": "2026-11-12"
+     }
+    ],
+    "from": "hint"
+   },
+   {
+    "fn": "cleanStages",
+    "in": [
+     [
+      {
+       "stage": "Applied",
+       "date": "2026-11-01"
+      },
+      {
+       "stage": "Applied",
+       "date": "2026-11-03"
+      },
+      {
+       "stage": "Offer",
+       "date": "2026-11-05"
+      }
+     ]
+    ],
+    "out": [
+     {
+      "stage": "Applied",
+      "date": "2026-11-01"
+     },
+     {
+      "stage": "Offer",
+      "date": "2026-11-05"
+     }
+    ],
+    "from": "hint"
+   },
+   {
+    "fn": "cleanStages",
+    "in": [
+     [
+      {
+       "stage": "Applied",
+       "date": "2026-11-01"
+      },
+      {
+       "stage": "Interviewing",
+       "date": "2026-11-05"
+      },
+      {
+       "stage": "Offer",
+       "date": "2026-11-09"
+      }
+     ]
+    ],
+    "out": [
+     {
+      "stage": "Applied",
+      "date": "2026-11-01"
+     },
+     {
+      "stage": "Interviewing",
+      "date": "2026-11-05"
+     },
+     {
+      "stage": "Offer",
+      "date": "2026-11-09"
+     }
+    ],
+    "from": "hint"
+   },
+   {
+    "fn": "cleanStep",
+    "in": [
+     [
+      {
+       "stage": "Applied",
+       "date": "2026-11-02"
+      }
+     ],
+     {
+      "stage": "Applied",
+      "date": "2026-11-12"
+     }
+    ],
+    "out": [
+     {
+      "stage": "Applied",
+      "date": "2026-11-02"
+     }
+    ],
+    "from": "hint"
+   },
+   {
+    "fn": "cleanStep",
+    "in": [
+     [
+      {
+       "stage": "Applied",
+       "date": "2026-11-02"
+      },
+      {
+       "stage": "Offer",
+       "date": "2026-11-12"
+      }
+     ],
+     {
+      "stage": "Applied",
+      "date": "2026-11-12"
+     }
+    ],
+    "out": [
+     {
+      "stage": "Applied",
+      "date": "2026-11-02"
+     }
+    ],
+    "from": "hint"
+   },
+   {
+    "fn": "cleanStep",
+    "in": [
+     [
+      {
+       "stage": "Applied",
+       "date": "2026-11-02"
+      },
+      {
+       "stage": "Offer",
+       "date": "2026-11-12"
+      }
+     ],
+     {
+      "stage": "Rejected",
+      "date": "2026-11-12"
+     }
+    ],
+    "out": [
+     {
+      "stage": "Applied",
+      "date": "2026-11-02"
+     },
+     {
+      "stage": "Rejected",
+      "date": "2026-11-12"
+     }
+    ],
+    "from": "hint"
+   },
+   {
+    "fn": "cleanStep",
+    "in": [
+     [
+      {
+       "stage": "Applied",
+       "date": "2026-11-02"
+      },
+      {
+       "stage": "Offer",
+       "date": "2026-11-10"
+      }
+     ],
+     {
+      "stage": "Applied",
+      "date": "2026-11-12"
+     }
+    ],
+    "out": [
+     {
+      "stage": "Applied",
+      "date": "2026-11-02"
+     },
+     {
+      "stage": "Offer",
+      "date": "2026-11-10"
+     },
+     {
+      "stage": "Applied",
+      "date": "2026-11-12"
+     }
+    ],
+    "from": "hint"
+   },
+   {
+    "fn": "cleanStep",
+    "in": [
+     [
+      {
+       "stage": "Applied",
+       "date": "2026-11-12"
+      }
+     ],
+     {
+      "stage": "Offer",
+      "date": "2026-11-12"
+     }
+    ],
+    "out": [
+     {
+      "stage": "Applied",
+      "date": "2026-11-12"
+     },
+     {
+      "stage": "Offer",
+      "date": "2026-11-12"
+     }
+    ],
+    "from": "hint"
+   },
+   {
+    "fn": "dropLast",
+    "in": [
+     [
+      1,
+      2,
+      3
+     ]
+    ],
+    "out": [
+     1,
+     2
+    ],
+    "from": "hint"
+   },
+   {
+    "fn": "toRow",
+    "in": [
+     [],
+     {
+      "id": 5,
+      "company": "Brightwater & Finch",
+      "role": "Forward Deployed Engineer",
+      "status": "Rejected",
+      "appliedOn": "2026-10-15"
+     }
+    ],
+    "out": [
+     {
+      "num": 1,
+      "id": 5,
+      "company": "Brightwater & Finch",
+      "numLabel": "#1 ·",
+      "meta": "Forward Deployed Engineer · Rejected · 15 Oct 2026",
+      "statusList": [
+       "Rejected"
+      ]
+     }
+    ],
+    "from": "hint"
+   },
+   {
+    "fn": "byDateDesc",
+    "in": [
+     [
+      {
+       "id": 1,
+       "appliedOn": "2026-10-01"
+      },
+      {
+       "id": 2,
+       "appliedOn": "2026-11-08"
+      },
+      {
+       "id": 3,
+       "appliedOn": "2026-10-20"
+      },
+      {
+       "id": 4,
+       "appliedOn": "2026-11-08"
+      }
+     ]
+    ],
+    "out": [
+     {
+      "id": 4,
+      "appliedOn": "2026-11-08"
+     },
+     {
+      "id": 2,
+      "appliedOn": "2026-11-08"
+     },
+     {
+      "id": 3,
+      "appliedOn": "2026-10-20"
+     },
+     {
+      "id": 1,
+      "appliedOn": "2026-10-01"
+     }
+    ],
+    "from": "hint"
+   },
+   {
+    "fn": "summaryOf",
+    "in": [
+     [
+      {
+       "status": "Applied"
+      },
+      {
+       "status": "Offer"
+      },
+      {
+       "status": "Applied"
+      },
+      {
+       "status": "Withdrawn"
+      }
+     ]
+    ],
+    "out": "2 Applied · 1 Offer · 1 Withdrawn",
+    "from": "hint"
+   },
+   {
+    "fn": "summaryOf",
+    "in": [
+     []
+    ],
+    "out": "",
+    "from": "hint"
+   },
+   {
+    "fn": "migrateV2",
+    "in": [
+     {
+      "schemaVersion": 2,
+      "nextId": 3,
+      "v1Backup": {
+       "schemaVersion": 1,
+       "nextId": 3,
+       "apps": []
+      },
+      "apps": [
+       {
+        "id": 1,
+        "company": "Lumen Harbor",
+        "role": "Data analyst",
+        "appliedOn": "2026-10-28",
+        "status": "Offer",
+        "notes": "",
+        "stages": [
+         {
+          "stage": "Interviewing",
+          "date": "2026-10-28"
+         },
+         {
+          "stage": "Offer",
+          "date": "2026-11-12"
+         },
+         {
+          "stage": "Interviewing",
+          "date": "2026-11-12"
+         },
+         {
+          "stage": "Offer",
+          "date": "2026-11-12"
+         }
+        ]
+       },
+       {
+        "id": 2,
+        "company": "Quillstone Labs",
+        "role": "Design lead",
+        "appliedOn": "2026-11-02",
+        "status": "Interviewing",
+        "notes": "Second role",
+        "stages": [
+         {
+          "stage": "Interviewing",
+          "date": "2026-11-02"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "out": {
+     "schemaVersion": 3,
+     "nextId": 3,
+     "v1Backup": {
+      "schemaVersion": 1,
+      "nextId": 3,
+      "apps": []
+     },
+     "v2Backup": [
+      {
+       "id": 1,
+       "stages": [
+        {
+         "stage": "Interviewing",
+         "date": "2026-10-28"
+        },
+        {
+         "stage": "Offer",
+         "date": "2026-11-12"
+        },
+        {
+         "stage": "Interviewing",
+         "date": "2026-11-12"
+        },
+        {
+         "stage": "Offer",
+         "date": "2026-11-12"
+        }
+       ]
+      },
+      {
+       "id": 2,
+       "stages": [
+        {
+         "stage": "Interviewing",
+         "date": "2026-11-02"
+        }
+       ]
+      }
+     ],
+     "apps": [
+      {
+       "id": 1,
+       "company": "Lumen Harbor",
+       "role": "Data analyst",
+       "appliedOn": "2026-10-28",
+       "notes": "",
+       "stages": [
+        {
+         "stage": "Interviewing",
+         "date": "2026-10-28"
+        },
+        {
+         "stage": "Offer",
+         "date": "2026-11-12"
+        }
+       ],
+       "status": "Offer"
+      },
+      {
+       "id": 2,
+       "company": "Quillstone Labs",
+       "role": "Design lead",
+       "appliedOn": "2026-11-02",
+       "notes": "Second role",
+       "stages": [
+        {
+         "stage": "Interviewing",
+         "date": "2026-11-02"
+        }
+       ],
+       "status": "Interviewing"
+      }
+     ]
+    },
+    "from": "hint"
+   },
+   {
+    "fn": "sortKey",
+    "in": [
+     {
+      "id": 3,
+      "appliedOn": "2026-10-28"
+     }
+    ],
+    "out": "2026-10-28#100003",
+    "from": "hint"
+   },
+   {
+    "fn": "sortKey",
+    "in": [
+     {
+      "id": 1,
+      "appliedOn": "2026-11-02"
+     }
+    ],
+    "out": "2026-11-02#100001",
+    "from": "hint"
+   },
+   {
+    "fn": "dropStep",
+    "in": [
+     {
+      "i": 0,
+      "n": 2,
+      "out": []
+     },
+     {
+      "stage": "Applied",
+      "date": "2026-11-12"
+     }
+    ],
+    "out": {
+     "i": 1,
+     "n": 2,
+     "out": [
+      {
+       "stage": "Applied",
+       "date": "2026-11-12"
+      }
+     ]
+    },
+    "from": "hint"
+   },
+   {
+    "fn": "dropStep",
+    "in": [
+     {
+      "i": 1,
+      "n": 2,
+      "out": [
+       {
+        "stage": "Applied",
+        "date": "2026-11-12"
+       }
+      ]
+     },
+     {
+      "stage": "Offer",
+      "date": "2026-11-12"
+     }
+    ],
+    "out": {
+     "i": 2,
+     "n": 2,
+     "out": [
+      {
+       "stage": "Applied",
+       "date": "2026-11-12"
+      }
+     ]
+    },
+    "from": "hint"
+   },
+   {
+    "fn": "joinStep",
+    "in": [
+     "",
+     "1 Applied"
+    ],
+    "out": "1 Applied",
+    "from": "hint"
+   },
+   {
+    "fn": "joinStep",
+    "in": [
+     "1 Applied",
+     "1 Offer"
+    ],
+    "out": "1 Applied · 1 Offer",
+    "from": "hint"
+   }
+  ]
+ },
+ "network": [],
+ "screens": [
+  {
+   "id": "list",
+   "says": "Every application, sorted by date applied with the newest first and numbered: company, then role, status and the date applied; under the count, how many are at each status.",
+   "states": {
+    "empty": "No applications yet. Tap Add application to log the first one you sent."
+   }
+  },
+  {
+   "id": "add",
+   "says": "A form for a new application: company, role, date applied (today unless changed), status and notes."
+  },
+  {
+   "id": "edit",
+   "says": "The same form for one application, with its stage history oldest first and dated; Done records a status change as a new stage, a same-day change replaces today's stage, and going back to the previous stage on the same day undoes it."
+  }
+ ],
+ "journeys": [
+  {
+   "id": "J-1",
+   "title": "Log an application",
+   "steps": [
+    {
+     "id": "J-1.1",
+     "text": "Tap Add application and fill in the company, role, date applied, status and notes"
+    },
+    {
+     "id": "J-1.2",
+     "text": "Tap Save to see it in the list, sorted by date applied with the newest first, numbered, with its role, status and date applied"
+    }
+   ]
+  },
+  {
+   "id": "J-2",
+   "title": "Update an application",
+   "steps": [
+    {
+     "id": "J-2.1",
+     "text": "Tap an application in the list to open it"
+    },
+    {
+     "id": "J-2.2",
+     "text": "Change its status or details, then tap Done to see the change in the list"
+    },
+    {
+     "id": "J-2.3",
+     "text": "See its dated stage history, oldest first: a change on a new day adds a stage, a same-day change replaces today's stage, going back to the previous stage the same day removes today's, and Done with the same status adds nothing"
+    }
+   ]
+  },
+  {
+   "id": "J-3",
+   "title": "Start with nothing saved",
+   "steps": [
+    {
+     "id": "J-3.1",
+     "text": "With nothing saved, the list says how to log the first application"
+    }
+   ]
+  },
+  {
+   "id": "J-4",
+   "title": "See where things stand",
+   "steps": [
+    {
+     "id": "J-4.1",
+     "text": "Under the count, see how many applications are at each status"
+    }
+   ]
+  }
+ ],
+ "promises": [
+  {
+   "id": "P-6",
+   "text": "Applications saved on this phone survive a reload and an update; an update that cleans the stage history keeps the first stage, keeps real changes on different days, and keeps the old stages in a backup",
+   "kind": "data"
+  },
+  {
+   "id": "P-2",
+   "text": "Each application has exactly one status at a time, and the status picker shows it whatever field has focus"
+  },
+  {
+   "id": "P-3",
+   "text": "Changing one application never changes another"
+  },
+  {
+   "id": "P-4",
+   "text": "An application's status always matches its latest stage"
+  },
+  {
+   "id": "P-5",
+   "text": "Every date shows on the card and in the stage history, as day, short month and year"
+  }
+ ],
+ "tests": [
+  {
+   "id": "T-1",
+   "title": "Start empty, log an application (numbered, dated, counted), change it to Offer and back the same day: only the original stage remains; one applied a day later sorts above it",
+   "proves": [
+    "J-3.1",
+    "J-1.1",
+    "J-1.2",
+    "J-2.1",
+    "J-2.2",
+    "J-2.3",
+    "J-4.1",
+    "P-2",
+    "P-4",
+    "P-5"
+   ],
+   "clock": "2026-11-12T09:00:00Z",
+   "steps": [
+    {
+     "expect": "see",
+     "text": "No applications yet"
+    },
+    {
+     "do": "tap",
+     "text": "Add application"
+    },
+    {
+     "do": "type",
+     "label": "Company",
+     "value": "Quillstone Labs"
+    },
+    {
+     "do": "type",
+     "label": "Role",
+     "value": "Product designer"
+    },
+    {
+     "do": "tap",
+     "text": "Save"
+    },
+    {
+     "expect": "see",
+     "text": "#1 ·"
+    },
+    {
+     "expect": "see",
+     "text": "Product designer · Applied · 12 Nov 2026"
+    },
+    {
+     "expect": "see",
+     "text": "1 Applied"
+    },
+    {
+     "do": "tap",
+     "text": "Quillstone Labs"
+    },
+    {
+     "do": "tap",
+     "role": "button",
+     "name": "Offer"
+    },
+    {
+     "do": "tap",
+     "text": "Done"
+    },
+    {
+     "do": "tap",
+     "text": "Quillstone Labs"
+    },
+    {
+     "do": "tap",
+     "role": "button",
+     "name": "Applied"
+    },
+    {
+     "do": "tap",
+     "text": "Done"
+    },
+    {
+     "do": "tap",
+     "text": "Quillstone Labs"
+    },
+    {
+     "expect": "state",
+     "path": "data.saved.apps.0.stages",
+     "equals": [
+      {
+       "stage": "Applied",
+       "date": "2026-11-12"
+      }
+     ]
+    },
+    {
+     "expect": "see",
+     "text": "Applied · 12 Nov 2026"
+    },
+    {
+     "do": "tap",
+     "text": "Done"
+    },
+    {
+     "do": "advance",
+     "ms": 86400000
+    },
+    {
+     "do": "reload"
+    },
+    {
+     "do": "tap",
+     "text": "Add application"
+    },
+    {
+     "do": "type",
+     "label": "Company",
+     "value": "Lumen Harbor"
+    },
+    {
+     "do": "type",
+     "label": "Role",
+     "value": "Data analyst"
+    },
+    {
+     "do": "tap",
+     "text": "Save"
+    },
+    {
+     "expect": "see",
+     "text": "Data analyst · Applied · 13 Nov 2026"
+    },
+    {
+     "expect": "state",
+     "path": "data.computed.listRows.0.company",
+     "equals": "Lumen Harbor"
+    },
+    {
+     "expect": "state",
+     "path": "data.computed.listRows.1.company",
+     "equals": "Quillstone Labs"
+    }
+   ]
+  },
+  {
+   "id": "T-2",
+   "kind": "data",
+   "title": "A back-and-forth stage history saved by the version before is cleaned up, keeps its first stage, and shows its dates",
+   "proves": [
+    "P-6",
+    "P-5"
+   ],
+   "clock": "2026-11-12T09:00:00Z",
+   "setup": [
+    {
+     "do": "tap",
+     "text": "Add application"
+    },
+    {
+     "do": "type",
+     "label": "Company",
+     "value": "Lumen Harbor"
+    },
+    {
+     "do": "type",
+     "label": "Role",
+     "value": "Data analyst"
+    },
+    {
+     "do": "tap",
+     "text": "Save"
+    },
+    {
+     "expect": "see",
+     "text": "Lumen Harbor"
+    },
+    {
+     "do": "tap",
+     "text": "Lumen Harbor"
+    },
+    {
+     "do": "tap",
+     "role": "button",
+     "name": "Offer"
+    },
+    {
+     "do": "tap",
+     "text": "Done"
+    },
+    {
+     "do": "tap",
+     "text": "Lumen Harbor"
+    },
+    {
+     "do": "tap",
+     "role": "button",
+     "name": "Applied"
+    },
+    {
+     "do": "tap",
+     "text": "Done"
+    },
+    {
+     "do": "tap",
+     "text": "Lumen Harbor"
+    },
+    {
+     "do": "tap",
+     "role": "button",
+     "name": "Offer"
+    },
+    {
+     "do": "tap",
+     "text": "Done"
+    }
+   ],
+   "check": [
+    {
+     "expect": "see",
+     "text": "Data analyst · Offer · 12 Nov 2026"
+    },
+    {
+     "do": "tap",
+     "text": "Lumen Harbor"
+    },
+    {
+     "expect": "see",
+     "text": "Applied · 12 Nov 2026"
+    },
+    {
+     "expect": "state",
+     "path": "data.saved.apps.0.stages",
+     "equals": [
+      {
+       "stage": "Applied",
+       "date": "2026-11-12"
+      },
+      {
+       "stage": "Offer",
+       "date": "2026-11-12"
+      }
+     ]
+    },
+    {
+     "expect": "state",
+     "path": "data.saved.v2Backup.0.stages",
+     "equals": [
+      {
+       "stage": "Applied",
+       "date": "2026-11-12"
+      },
+      {
+       "stage": "Offer",
+       "date": "2026-11-12"
+      },
+      {
+       "stage": "Applied",
+       "date": "2026-11-12"
+      },
+      {
+       "stage": "Offer",
+       "date": "2026-11-12"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

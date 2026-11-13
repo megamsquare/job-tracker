@@ -1,0 +1,29 @@
+# macOS and editor clutter
+.DS_Store
+.AppleDouble
+.vscode/
+.idea/
+*.swp
+
+# Dependencies and build output (none today, but keep them out if a tool adds them)
+node_modules/
+dist/
+.cache/
+
+# Secrets and local environment
+.env*
+*.pem
+*.key
+
+# Claude Code local files: per-machine settings and permissions
+.claude/settings.local.json
+.claude/*.local.*
+
+# Raw Claude Code session logs: unscrubbed, and they include account details.
+# The readable, scrubbed versions live in transcript/.
+*.jsonl
+
+# Scratch files
+tmp/
+scratch/
+*.log

@@ -1,0 +1,1347 @@
+{
+ "v": 1,
+ "manifest": {
+  "runtime": "0.4.0",
+  "generator": "claude-opus-5-5 (hand-written)",
+  "source": {
+   "fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  }
+ },
+ "module": {
+  "id": "jobtracker",
+  "name": "Job Tracker",
+  "purpose": "Keep a list of the jobs you've applied for, with the role, the date you applied, where each one stands and your notes.",
+  "icon": "briefcase",
+  "category": "work",
+  "tags": [
+   "tracker",
+   "job-search",
+   "log"
+  ]
+ },
+ "tokens": {
+  "color": {
+   "$type": "color",
+   "background": {
+    "$value": "#f5f6f8"
+   },
+   "on-background": {
+    "$value": "#16181d"
+   },
+   "surface": {
+    "$value": "#ffffff"
+   },
+   "on-surface": {
+    "$value": "#16181d"
+   },
+   "border": {
+    "$value": "#dcdfe5"
+   },
+   "primary": {
+    "$value": "#3346c4"
+   },
+   "on-primary": {
+    "$value": "#ffffff"
+   },
+   "input": {
+    "$value": "#eef0f4"
+   },
+   "on-input": {
+    "$value": "#16181d"
+   },
+   "success": {
+    "$value": "#15803d"
+   },
+   "warning": {
+    "$value": "#b45309"
+   },
+   "error": {
+    "$value": "#b91c1c"
+   }
+  },
+  "text": {
+   "$type": "color",
+   "caption-color": {
+    "$value": "#565c6a"
+   },
+   "color": {
+    "$value": "#16181d"
+   }
+  },
+  "border-radius": {
+   "$type": "dimension",
+   "$value": {
+    "value": 12,
+    "unit": "px"
+   }
+  },
+  "font-family": {
+   "$type": "fontFamily",
+   "$value": [
+    "system-ui",
+    "sans-serif"
+   ]
+  },
+  "dark": {
+   "color": {
+    "$type": "color",
+    "background": {
+     "$value": "#111318"
+    },
+    "on-background": {
+     "$value": "#eceef3"
+    },
+    "surface": {
+     "$value": "#1b1e25"
+    },
+    "on-surface": {
+     "$value": "#eceef3"
+    },
+    "border": {
+     "$value": "#2e333d"
+    },
+    "primary": {
+     "$value": "#9aa8ff"
+    },
+    "on-primary": {
+     "$value": "#10131c"
+    },
+    "input": {
+     "$value": "#232731"
+    },
+    "on-input": {
+     "$value": "#eceef3"
+    },
+    "success": {
+     "$value": "#4ade80"
+    },
+    "warning": {
+     "$value": "#fbbf24"
+    },
+    "error": {
+     "$value": "#f87171"
+    }
+   },
+   "text": {
+    "$type": "color",
+    "caption-color": {
+     "$value": "#a6acb9"
+    },
+    "color": {
+     "$value": "#eceef3"
+    }
+   }
+  }
+ },
+ "surface": {
+  "catalog": "https://cloudcrane.ai/catalogs/app/v1.json",
+  "messages": [
+   {
+    "version": "v0.9.1",
+    "createSurface": {
+     "surfaceId": "jobs",
+     "catalogId": "https://cloudcrane.ai/catalogs/app/v1.json"
+    }
+   },
+   {
+    "version": "v0.9.1",
+    "updateDataModel": {
+     "surfaceId": "jobs",
+     "path": "/ui",
+     "value": {
+      "mode": "list",
+      "selId": 0,
+      "draft": {
+       "id": 0,
+       "company": "",
+       "role": "",
+       "appliedOn": "",
+       "status": "Applied",
+       "notes": ""
+      },
+      "statuses": [
+       {
+        "name": "Applied"
+       },
+       {
+        "name": "Interviewing"
+       },
+       {
+        "name": "Offer"
+       },
+       {
+        "name": "Rejected"
+       },
+       {
+        "name": "Withdrawn"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "version": "v0.9.1",
+    "updateComponents": {
+     "surfaceId": "jobs",
+     "components": [
+      {
+       "id": "root",
+       "component": "Column",
+       "children": [
+        "title",
+        "listSec",
+        "addSec",
+        "editSec"
+       ]
+      },
+      {
+       "id": "title",
+       "component": "Text",
+       "text": "Job Tracker",
+       "variant": "h1"
+      },
+      {
+       "id": "listSec",
+       "component": "List",
+       "children": {
+        "componentId": "listView",
+        "path": "/computed/isList"
+       }
+      },
+      {
+       "id": "listView",
+       "component": "Column",
+       "children": [
+        "count",
+        "addBtn",
+        "empty",
+        "rows"
+       ]
+      },
+      {
+       "id": "count",
+       "component": "Text",
+       "text": {
+        "path": "/computed/countText"
+       },
+       "variant": "caption"
+      },
+      {
+       "id": "addBtn",
+       "component": "Button",
+       "child": "addBtnLabel",
+       "variant": "primary",
+       "action": {
+        "functionCall": {
+         "call": "batch",
+         "args": {
+          "steps": [
+           {
+            "op": "set",
+            "target": "/ui/draft/company",
+            "value": ""
+           },
+           {
+            "op": "set",
+            "target": "/ui/draft/role",
+            "value": ""
+           },
+           {
+            "op": "set",
+            "target": "/ui/draft/appliedOn",
+            "value": {
+             "path": "/today"
+            }
+           },
+           {
+            "op": "set",
+            "target": "/ui/draft/status",
+            "value": "Applied"
+           },
+           {
+            "op": "set",
+            "target": "/ui/draft/notes",
+            "value": ""
+           },
+           {
+            "op": "set",
+            "target": "/ui/mode",
+            "value": "add"
+           }
+          ]
+         }
+        }
+       }
+      },
+      {
+       "id": "addBtnLabel",
+       "component": "Text",
+       "text": "Add application"
+      },
+      {
+       "id": "empty",
+       "component": "List",
+       "children": {
+        "componentId": "emptyText",
+        "path": "/computed/empty"
+       }
+      },
+      {
+       "id": "emptyText",
+       "component": "Text",
+       "text": {
+        "path": "text"
+       }
+      },
+      {
+       "id": "rows",
+       "component": "List",
+       "children": {
+        "componentId": "rowCard",
+        "path": "/computed/rows"
+       }
+      },
+      {
+       "id": "rowCard",
+       "component": "Card",
+       "child": "rowBtn"
+      },
+      {
+       "id": "rowBtn",
+       "component": "Button",
+       "child": "rowCol",
+       "variant": "borderless",
+       "action": {
+        "functionCall": {
+         "call": "batch",
+         "args": {
+          "steps": [
+           {
+            "op": "set",
+            "target": "/ui/selId",
+            "value": {
+             "path": "id"
+            }
+           },
+           {
+            "op": "set",
+            "target": "/ui/mode",
+            "value": "edit"
+           }
+          ]
+         }
+        }
+       }
+      },
+      {
+       "id": "rowCol",
+       "component": "Column",
+       "children": [
+        "rowCompany",
+        "rowMeta",
+        "rowDate"
+       ]
+      },
+      {
+       "id": "rowCompany",
+       "component": "Text",
+       "text": {
+        "path": "company"
+       },
+       "variant": "h4"
+      },
+      {
+       "id": "rowMeta",
+       "component": "Text",
+       "text": {
+        "call": "formatString",
+        "args": {
+         "value": "${role} · ${status}"
+        }
+       }
+      },
+      {
+       "id": "rowDate",
+       "component": "Text",
+       "variant": "caption",
+       "text": {
+        "call": "formatString",
+        "args": {
+         "value": "${formatDate(value:${appliedOn}, format:'d MMM yyyy')}"
+        }
+       }
+      },
+      {
+       "id": "addSec",
+       "component": "List",
+       "children": {
+        "componentId": "addView",
+        "path": "/computed/isAdd"
+       }
+      },
+      {
+       "id": "addView",
+       "component": "Column",
+       "children": [
+        "addTitle",
+        "aCompany",
+        "aRole",
+        "aDate",
+        "aStatusText",
+        "aStatusList",
+        "aNotes",
+        "addActions"
+       ]
+      },
+      {
+       "id": "addTitle",
+       "component": "Text",
+       "text": "New application",
+       "variant": "h2"
+      },
+      {
+       "id": "aCompany",
+       "component": "TextField",
+       "label": "Company",
+       "value": {
+        "path": "/ui/draft/company"
+       }
+      },
+      {
+       "id": "aRole",
+       "component": "TextField",
+       "label": "Role",
+       "value": {
+        "path": "/ui/draft/role"
+       }
+      },
+      {
+       "id": "aDate",
+       "component": "DateTimeInput",
+       "label": "Date applied",
+       "enableDate": true,
+       "value": {
+        "path": "/ui/draft/appliedOn"
+       }
+      },
+      {
+       "id": "aStatusText",
+       "component": "Text",
+       "text": {
+        "call": "formatString",
+        "args": {
+         "value": "Status: ${/ui/draft/status}"
+        }
+       }
+      },
+      {
+       "id": "aStatusList",
+       "component": "List",
+       "direction": "horizontal",
+       "children": {
+        "componentId": "aStatusBtn",
+        "path": "/ui/statuses"
+       }
+      },
+      {
+       "id": "aStatusBtn",
+       "component": "Button",
+       "child": "aStatusLabel",
+       "action": {
+        "functionCall": {
+         "call": "set",
+         "args": {
+          "path": "/ui/draft/status",
+          "value": {
+           "path": "name"
+          }
+         }
+        }
+       }
+      },
+      {
+       "id": "aStatusLabel",
+       "component": "Text",
+       "text": {
+        "path": "name"
+       }
+      },
+      {
+       "id": "aNotes",
+       "component": "TextField",
+       "label": "Notes",
+       "variant": "longText",
+       "value": {
+        "path": "/ui/draft/notes"
+       }
+      },
+      {
+       "id": "addActions",
+       "component": "Row",
+       "justify": "spaceBetween",
+       "children": [
+        "cancelBtn",
+        "saveBtn"
+       ]
+      },
+      {
+       "id": "cancelBtn",
+       "component": "Button",
+       "child": "cancelLabel",
+       "action": {
+        "functionCall": {
+         "call": "set",
+         "args": {
+          "path": "/ui/mode",
+          "value": "list"
+         }
+        }
+       }
+      },
+      {
+       "id": "cancelLabel",
+       "component": "Text",
+       "text": "Cancel"
+      },
+      {
+       "id": "saveBtn",
+       "component": "Button",
+       "child": "saveLabel",
+       "variant": "primary",
+       "checks": [
+        {
+         "condition": {
+          "call": "required",
+          "args": {
+           "value": {
+            "path": "/ui/draft/company"
+           }
+          },
+          "returnType": "boolean"
+         },
+         "message": "Add the company first"
+        },
+        {
+         "condition": {
+          "call": "required",
+          "args": {
+           "value": {
+            "path": "/ui/draft/role"
+           }
+          },
+          "returnType": "boolean"
+         },
+         "message": "Add the role first"
+        }
+       ],
+       "action": {
+        "functionCall": {
+         "call": "batch",
+         "args": {
+          "steps": [
+           {
+            "op": "set",
+            "target": "/ui/draft/id",
+            "value": {
+             "path": "/saved/nextId"
+            }
+           },
+           {
+            "op": "push",
+            "target": "/saved/apps",
+            "value": {
+             "path": "/ui/draft"
+            }
+           },
+           {
+            "op": "set",
+            "target": "/saved/nextId",
+            "value": {
+             "path": "/computed/afterNextId"
+            }
+           },
+           {
+            "op": "set",
+            "target": "/ui/mode",
+            "value": "list"
+           }
+          ]
+         }
+        }
+       }
+      },
+      {
+       "id": "saveLabel",
+       "component": "Text",
+       "text": "Save"
+      },
+      {
+       "id": "editSec",
+       "component": "List",
+       "children": {
+        "componentId": "editView",
+        "path": "/computed/isEdit"
+       }
+      },
+      {
+       "id": "editView",
+       "component": "Column",
+       "children": [
+        "editTitle",
+        "eCompany",
+        "eRole",
+        "eDate",
+        "eStatusText",
+        "eStatusList",
+        "eNotes",
+        "doneBtn"
+       ]
+      },
+      {
+       "id": "editTitle",
+       "component": "Text",
+       "text": "Edit application",
+       "variant": "h2"
+      },
+      {
+       "id": "eCompany",
+       "component": "TextField",
+       "label": "Company",
+       "value": {
+        "path": "/ui/edit/company"
+       }
+      },
+      {
+       "id": "eRole",
+       "component": "TextField",
+       "label": "Role",
+       "value": {
+        "path": "/ui/edit/role"
+       }
+      },
+      {
+       "id": "eDate",
+       "component": "DateTimeInput",
+       "label": "Date applied",
+       "enableDate": true,
+       "value": {
+        "path": "/ui/edit/appliedOn"
+       }
+      },
+      {
+       "id": "eStatusText",
+       "component": "Text",
+       "text": {
+        "call": "formatString",
+        "args": {
+         "value": "Status: ${/ui/edit/status}"
+        }
+       }
+      },
+      {
+       "id": "eStatusList",
+       "component": "List",
+       "direction": "horizontal",
+       "children": {
+        "componentId": "eStatusBtn",
+        "path": "/ui/statuses"
+       }
+      },
+      {
+       "id": "eStatusBtn",
+       "component": "Button",
+       "child": "eStatusLabel",
+       "action": {
+        "functionCall": {
+         "call": "set",
+         "args": {
+          "path": "/ui/edit/status",
+          "value": {
+           "path": "name"
+          }
+         }
+        }
+       }
+      },
+      {
+       "id": "eStatusLabel",
+       "component": "Text",
+       "text": {
+        "path": "name"
+       }
+      },
+      {
+       "id": "eNotes",
+       "component": "TextField",
+       "label": "Notes",
+       "variant": "longText",
+       "value": {
+        "path": "/ui/edit/notes"
+       }
+      },
+      {
+       "id": "doneBtn",
+       "component": "Button",
+       "child": "doneLabel",
+       "variant": "primary",
+       "checks": [
+        {
+         "condition": {
+          "call": "required",
+          "args": {
+           "value": {
+            "path": "/ui/edit/company"
+           }
+          },
+          "returnType": "boolean"
+         },
+         "message": "Add the company first"
+        },
+        {
+         "condition": {
+          "call": "required",
+          "args": {
+           "value": {
+            "path": "/ui/edit/role"
+           }
+          },
+          "returnType": "boolean"
+         },
+         "message": "Add the role first"
+        }
+       ],
+       "action": {
+        "functionCall": {
+         "call": "set",
+         "args": {
+          "path": "/ui/mode",
+          "value": "list"
+         }
+        }
+       }
+      },
+      {
+       "id": "doneLabel",
+       "component": "Text",
+       "text": "Done"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "data": {
+  "version": 2,
+  "key": "jt.data",
+  "persist": "/saved",
+  "views": [
+   {
+    "path": "/ui/edit",
+    "source": "/saved/apps/${/computed/selIndex}"
+   }
+  ],
+  "schema": {
+   "type": "object",
+   "properties": {
+    "schemaVersion": {
+     "type": "integer"
+    },
+    "nextId": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "apps": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "integer"
+       },
+       "company": {
+        "type": "string"
+       },
+       "role": {
+        "type": "string"
+       },
+       "appliedOn": {
+        "type": "string"
+       },
+       "status": {
+        "type": "string"
+       },
+       "notes": {
+        "type": "string"
+       },
+       "stages": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "properties": {
+          "stage": {
+           "type": "string"
+          },
+          "date": {
+           "type": "string"
+          }
+         },
+         "required": [
+          "stage",
+          "date"
+         ]
+        }
+       }
+      },
+      "required": [
+       "id",
+       "company",
+       "role",
+       "appliedOn",
+       "status"
+      ]
+     }
+    }
+   },
+   "required": [
+    "schemaVersion",
+    "nextId",
+    "apps"
+   ]
+  },
+  "initial": {
+   "schemaVersion": 2,
+   "nextId": 1,
+   "apps": []
+  },
+  "migrations": [
+   {
+    "from": 1,
+    "to": 2,
+    "cel": "{'schemaVersion': 2, 'nextId': saved.nextId, 'apps': saved.apps.map(a, {'id': a.id, 'company': a.company, 'role': a.role, 'appliedOn': a.appliedOn, 'status': a.status, 'notes': has(a.notes) ? a.notes : '', 'stages': [{'stage': a.status, 'date': a.appliedOn}]})}"
+   }
+  ],
+  "personal": [
+   "/apps"
+  ]
+ },
+ "logic": {
+  "consts": {},
+  "functions": {
+   "newestFirst": {
+    "params": [
+     "acc",
+     "a"
+    ],
+    "cel": "[a] + acc"
+   },
+   "findStep": {
+    "params": [
+     "acc",
+     "a"
+    ],
+    "cel": "{'n': acc.n + 1, 'at': has(a.id) && a.id == acc.id ? acc.n : acc.at, 'id': acc.id}"
+   },
+   "indexOfId": {
+    "params": [
+     "apps",
+     "id"
+    ],
+    "cel": "fold(apps, {'n': 0, 'at': -1, 'id': id}, 'findStep').at"
+   },
+   "countText": {
+    "params": [
+     "n"
+    ],
+    "cel": "string(n) + (n == 1 ? ' application' : ' applications')"
+   }
+  },
+  "computed": {
+   "/computed/rows": "fold(saved.apps, [], 'newestFirst')",
+   "/computed/selIndex": "indexOfId(saved.apps, ui.selId)",
+   "/computed/afterNextId": "saved.nextId + 1",
+   "/computed/countText": "countText(saved.apps.size())",
+   "/computed/isList": "ui.mode == 'list' ? [{'shown': true}] : []",
+   "/computed/isAdd": "ui.mode == 'add' ? [{'shown': true}] : []",
+   "/computed/isEdit": "ui.mode == 'edit' ? [{'shown': true}] : []",
+   "/computed/empty": "saved.apps.size() == 0 ? [{'text': 'No applications yet. Tap Add application to log the first one you sent.'}] : []"
+  },
+  "vectors": [
+   {
+    "fn": "indexOfId",
+    "in": [
+     [
+      {
+       "id": 1
+      },
+      {
+       "id": 4
+      },
+      {
+       "id": 2
+      }
+     ],
+     4
+    ],
+    "out": 1,
+    "from": "hint"
+   },
+   {
+    "fn": "indexOfId",
+    "in": [
+     [
+      {
+       "id": 1
+      },
+      {
+       "id": 4
+      }
+     ],
+     9
+    ],
+    "out": -1,
+    "from": "hint"
+   },
+   {
+    "fn": "indexOfId",
+    "in": [
+     [],
+     1
+    ],
+    "out": -1,
+    "from": "hint"
+   },
+   {
+    "fn": "countText",
+    "in": [
+     1
+    ],
+    "out": "1 application",
+    "from": "hint"
+   },
+   {
+    "fn": "countText",
+    "in": [
+     3
+    ],
+    "out": "3 applications",
+    "from": "hint"
+   },
+   {
+    "fn": "newestFirst",
+    "in": [
+     [
+      {
+       "id": 1
+      }
+     ],
+     {
+      "id": 2
+     }
+    ],
+    "out": [
+     {
+      "id": 2
+     },
+     {
+      "id": 1
+     }
+    ],
+    "from": "hint"
+   }
+  ]
+ },
+ "network": [],
+ "screens": [
+  {
+   "id": "list",
+   "says": "Every application, newest first: company, role and status, and the date applied.",
+   "states": {
+    "empty": "No applications yet. Tap Add application to log the first one you sent."
+   }
+  },
+  {
+   "id": "add",
+   "says": "A form for a new application: company, role, date applied (today unless changed), status and notes."
+  },
+  {
+   "id": "edit",
+   "says": "The same form for one application, changing it as you type; Done goes back to the list."
+  }
+ ],
+ "journeys": [
+  {
+   "id": "J-1",
+   "title": "Log an application",
+   "steps": [
+    {
+     "id": "J-1.1",
+     "text": "Tap Add application and fill in the company, role, date applied, status and notes"
+    },
+    {
+     "id": "J-1.2",
+     "text": "Tap Save to see it at the top of the list"
+    }
+   ]
+  },
+  {
+   "id": "J-2",
+   "title": "Update an application",
+   "steps": [
+    {
+     "id": "J-2.1",
+     "text": "Tap an application in the list to open it"
+    },
+    {
+     "id": "J-2.2",
+     "text": "Change its status or details, then tap Done to see the change in the list"
+    }
+   ]
+  },
+  {
+   "id": "J-3",
+   "title": "Start with nothing saved",
+   "steps": [
+    {
+     "id": "J-3.1",
+     "text": "With nothing saved, the list says how to log the first application"
+    }
+   ]
+  }
+ ],
+ "promises": [
+  {
+   "id": "P-1",
+   "text": "Applications saved on this phone survive a reload and an update",
+   "kind": "data"
+  },
+  {
+   "id": "P-2",
+   "text": "Each application has exactly one status at a time"
+  },
+  {
+   "id": "P-3",
+   "text": "Changing one application never changes another"
+  }
+ ],
+ "tests": [
+  {
+   "id": "T-1",
+   "title": "Log an application and it stays after a reload",
+   "proves": [
+    "J-1.1",
+    "J-1.2"
+   ],
+   "clock": "2026-11-10T09:00:00Z",
+   "steps": [
+    {
+     "do": "tap",
+     "text": "Add application"
+    },
+    {
+     "do": "type",
+     "label": "Company",
+     "value": "Quillstone Labs"
+    },
+    {
+     "do": "type",
+     "label": "Role",
+     "value": "Product designer"
+    },
+    {
+     "do": "type",
+     "label": "Notes",
+     "value": "Sent the portfolio link"
+    },
+    {
+     "do": "tap",
+     "text": "Save"
+    },
+    {
+     "expect": "see",
+     "text": "Quillstone Labs"
+    },
+    {
+     "expect": "see",
+     "text": "Product designer · Applied"
+    },
+    {
+     "expect": "see",
+     "text": "10 Nov 2026"
+    },
+    {
+     "expect": "see",
+     "text": "1 application"
+    },
+    {
+     "do": "reload"
+    },
+    {
+     "expect": "see",
+     "text": "Quillstone Labs"
+    }
+   ]
+  },
+  {
+   "id": "T-2",
+   "title": "Open an application and change its status and role",
+   "proves": [
+    "J-2.1",
+    "J-2.2",
+    "P-2"
+   ],
+   "clock": "2026-11-10T09:00:00Z",
+   "steps": [
+    {
+     "do": "tap",
+     "text": "Add application"
+    },
+    {
+     "do": "type",
+     "label": "Company",
+     "value": "Lumen Harbor"
+    },
+    {
+     "do": "type",
+     "label": "Role",
+     "value": "Data analyst"
+    },
+    {
+     "do": "tap",
+     "text": "Save"
+    },
+    {
+     "do": "tap",
+     "text": "Lumen Harbor"
+    },
+    {
+     "expect": "value",
+     "label": "Role",
+     "equals": "Data analyst"
+    },
+    {
+     "do": "tap",
+     "role": "button",
+     "name": "Interviewing"
+    },
+    {
+     "expect": "see",
+     "text": "Status: Interviewing"
+    },
+    {
+     "do": "type",
+     "label": "Role",
+     "value": "Senior data analyst"
+    },
+    {
+     "do": "tap",
+     "text": "Done"
+    },
+    {
+     "expect": "see",
+     "text": "Senior data analyst · Interviewing"
+    },
+    {
+     "expect": "notSee",
+     "text": "· Applied"
+    }
+   ]
+  },
+  {
+   "id": "T-3",
+   "title": "With nothing saved, the list says how to start",
+   "proves": [
+    "J-3.1"
+   ],
+   "steps": [
+    {
+     "expect": "see",
+     "text": "No applications yet"
+    },
+    {
+     "expect": "see",
+     "text": "0 applications"
+    }
+   ]
+  },
+  {
+   "id": "T-4",
+   "title": "Editing the second of two applications leaves the first unchanged",
+   "proves": [
+    "P-3"
+   ],
+   "clock": "2026-11-10T09:00:00Z",
+   "steps": [
+    {
+     "do": "tap",
+     "text": "Add application"
+    },
+    {
+     "do": "type",
+     "label": "Company",
+     "value": "Quillstone Labs"
+    },
+    {
+     "do": "type",
+     "label": "Role",
+     "value": "Product designer"
+    },
+    {
+     "do": "tap",
+     "text": "Save"
+    },
+    {
+     "do": "tap",
+     "text": "Add application"
+    },
+    {
+     "do": "type",
+     "label": "Company",
+     "value": "Lumen Harbor"
+    },
+    {
+     "do": "type",
+     "label": "Role",
+     "value": "Data analyst"
+    },
+    {
+     "do": "tap",
+     "text": "Save"
+    },
+    {
+     "do": "tap",
+     "text": "Lumen Harbor"
+    },
+    {
+     "do": "tap",
+     "role": "button",
+     "name": "Offer"
+    },
+    {
+     "do": "type",
+     "label": "Notes",
+     "value": "Offer call on Friday"
+    },
+    {
+     "do": "tap",
+     "text": "Done"
+    },
+    {
+     "expect": "see",
+     "text": "Data analyst · Offer"
+    },
+    {
+     "expect": "see",
+     "text": "Product designer · Applied"
+    },
+    {
+     "do": "reload"
+    },
+    {
+     "do": "tap",
+     "text": "Quillstone Labs"
+    },
+    {
+     "expect": "value",
+     "label": "Company",
+     "equals": "Quillstone Labs"
+    },
+    {
+     "expect": "value",
+     "label": "Role",
+     "equals": "Product designer"
+    },
+    {
+     "expect": "value",
+     "label": "Notes",
+     "equals": ""
+    },
+    {
+     "expect": "see",
+     "text": "Status: Applied"
+    }
+   ]
+  },
+  {
+   "id": "T-5",
+   "kind": "data",
+   "title": "Applications and their statuses survive a reload and an update",
+   "proves": [
+    "P-1"
+   ],
+   "clock": "2026-11-10T09:00:00Z",
+   "setup": [
+    {
+     "do": "tap",
+     "text": "Add application"
+    },
+    {
+     "do": "type",
+     "label": "Company",
+     "value": "Quillstone Labs"
+    },
+    {
+     "do": "type",
+     "label": "Role",
+     "value": "Product designer"
+    },
+    {
+     "do": "tap",
+     "text": "Save"
+    },
+    {
+     "do": "tap",
+     "text": "Add application"
+    },
+    {
+     "do": "type",
+     "label": "Company",
+     "value": "Lumen Harbor"
+    },
+    {
+     "do": "type",
+     "label": "Role",
+     "value": "Data analyst"
+    },
+    {
+     "do": "tap",
+     "text": "Save"
+    },
+    {
+     "do": "tap",
+     "text": "Lumen Harbor"
+    },
+    {
+     "do": "tap",
+     "role": "button",
+     "name": "Interviewing"
+    },
+    {
+     "do": "tap",
+     "text": "Done"
+    }
+   ],
+   "check": [
+    {
+     "expect": "see",
+     "text": "Quillstone Labs"
+    },
+    {
+     "expect": "see",
+     "text": "Product designer · Applied"
+    },
+    {
+     "expect": "see",
+     "text": "Lumen Harbor"
+    },
+    {
+     "expect": "see",
+     "text": "Data analyst · Interviewing"
+    },
+    {
+     "expect": "see",
+     "text": "2 applications"
+    }
+   ]
+  }
+ ]
+}
